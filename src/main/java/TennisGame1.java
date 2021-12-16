@@ -48,7 +48,6 @@ public class TennisGame1 implements TennisGame {
     }
 
     public String getScore() {
-        String score = "";
         if (isEqualScore()) {
             return addScore();
         } else if (isMaxScore()) {
@@ -58,10 +57,8 @@ public class TennisGame1 implements TennisGame {
     }
 
     private String getScoreWinner() {
-        String score = "";
         int minusResult = m_score1-m_score2;
-        score = getResult(minusResult);
-        return score;
+        return getResult(minusResult);
     }
 
     private String addScore() {

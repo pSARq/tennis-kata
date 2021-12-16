@@ -16,120 +16,166 @@ public class TennisGame2 implements TennisGame
 
     public String getScore(){
         String score = "";
-        if (P1point == P2point && P1point < 4)
-        {
-            if (P1point==0)
-                score = "Love";
-            if (P1point==1)
-                score = "Fifteen";
-            if (P1point==2)
-                score = "Thirty";
-            score += "-All";
+
+        if (isTie()) {
+            score = calculateScore();
         }
-        if (P1point==P2point && P1point>=3)
-            score = "Deuce";
-        
-        if (P1point > 0 && P2point==0)
-        {
-            if (P1point==1)
-                P1res = "Fifteen";
-            if (P1point==2)
-                P1res = "Thirty";
-            if (P1point==3)
-                P1res = "Forty";
-            
-            P2res = "Love";
-            score = P1res + "-" + P2res;
+
+        if (isPointHigher()) {
+            score = getPointPlayers();
         }
-        if (P2point > 0 && P1point==0)
-        {
-            if (P2point==1)
-                P2res = "Fifteen";
-            if (P2point==2)
-                P2res = "Thirty";
-            if (P2point==3)
-                P2res = "Forty";
-            
-            P1res = "Love";
-            score = P1res + "-" + P2res;
+
+        if (isAdvantage()) {
+            score = getAdvantagePlayer();
         }
-        
-        if (P1point>P2point && P1point < 4)
-        {
-            if (P1point==2)
-                P1res="Thirty";
-            if (P1point==3)
-                P1res="Forty";
-            if (P2point==1)
-                P2res="Fifteen";
-            if (P2point==2)
-                P2res="Thirty";
-            score = P1res + "-" + P2res;
+
+        if (isWinner()){
+            score = getWinner();
         }
-        if (P2point>P1point && P2point < 4)
-        {
-            if (P2point==2)
-                P2res="Thirty";
-            if (P2point==3)
-                P2res="Forty";
-            if (P1point==1)
-                P1res="Fifteen";
-            if (P1point==2)
-                P1res="Thirty";
-            score = P1res + "-" + P2res;
-        }
-        
-        if (P1point > P2point && P2point >= 3)
-        {
-            score = "Advantage player1";
-        }
-        
-        if (P2point > P1point && P1point >= 3)
-        {
-            score = "Advantage player2";
-        }
-        
-        if (P1point>=4 && P2point>=0 && (P1point-P2point)>=2)
-        {
-            score = "Win for player1";
-        }
-        if (P2point>=4 && P1point>=0 && (P2point-P1point)>=2)
-        {
-            score = "Win for player2";
-        }
+
         return score;
     }
-    
-    public void SetP1Score(int number){
-        
-        for (int i = 0; i < number; i++)
-        {
-            P1Score();
-        }
-            
+
+    //Métodos para validar los metodos de los if dentro de getScore()
+    private boolean isTie() {
+        return isPointEqual() || isDeduce();
     }
-    
-    public void SetP2Score(int number){
-        
-        for (int i = 0; i < number; i++)
-        {
-            P2Score();
-        }
-            
+
+    private boolean isFirstPointGame() {
+        return isPlayer1FirstMarkPoint(P1point, P2point) || isPlayer1FirstMarkPoint(P2point, P1point);
     }
-    
+
+    private boolean isPointHigher() {
+        return isPoint1HighThanPoint2(P2point, P1point) || isPoint1HighThanPoint2(P1point, P2point);
+    }
+
+    private boolean isAdvantage() {
+        return isPoint1AdvantagePoint2(P1point, P2point) || isPoint1AdvantagePoint2(P2point, P1point);
+    }
+
+    private boolean isWinner() {
+        return isFirstPointWinner(P1point, P2point) || isFirstPointWinner(P2point, P1point);
+    }
+
+    //Son los métodos para validar condiciones de los puntajes
+    private boolean isPlayer1FirstMarkPoint(int firstPoint, int secondPoint) {
+        return firstPoint > 0 && secondPoint==0;
+    }
+
+    private boolean isDeduce() {
+        return P1point==P2point && P1point>=3;
+    }
+
+    private boolean isPointEqual() {
+        return P1point == P2point && P1point < 4;
+    }
+
+    private boolean isFirstPointWinner(int firstPoint, int secondPoint) {
+        return isPoint1winner(firstPoint, secondPoint) && isSubtractionPointsHigher1(firstPoint, secondPoint);
+    }
+
+    private boolean isSubtractionPointsHigher1(int firstPoint, int secondPoint) {
+        return (firstPoint - secondPoint) >= 2;
+    }
+
+    private boolean isPoint1winner(int firstPoint, int secondPoint) {
+        return firstPoint >= 4 && secondPoint >= 0;
+    }
+
+    private boolean isPoint1HighThanPoint2(int firstPoint, int secondPoint) {
+        return secondPoint > firstPoint && secondPoint < 4;
+    }
+
+    private boolean isPoint1AdvantagePoint2(int firstPoint, int secondPoint) {
+        return firstPoint > secondPoint && secondPoint >= 3;
+    }
+
+    //Son los métodos para obtener resultados
+    //Metodos get
+    private String getFirstPointGame() {
+        if (isPlayer1FirstMarkPoint(P1point, P2point)){
+            P1res = calculatePointPlayer(P1point);
+            addLovePlayer(P1res);
+            return addScore();
+        }
+        P2res = calculatePointPlayer(P2point);
+        addLovePlayer(P2res);
+        return addScore();
+    }
+
+    private String getAdvantagePlayer(){
+        return isPoint1AdvantagePoint2(P1point, P2point) == true ? "Advantage "+ player1Name : "Advantage "+ player2Name;
+    }
+
+    private String getWinner(){
+        return isFirstPointWinner(P1point, P2point) == true ? "Win for "+ player1Name : "Win for "+ player2Name;
+    }
+
+    private String getPointPlayers(){
+        if (isFirstPointGame()){
+            return getFirstPointGame();
+        }
+        P1res=calculatePointPlayer(P1point);
+        P2res=calculatePointPlayer(P2point);
+        return addScore();
+    }
+
+
+    //Metodos calculate
+    private String calculatePointPlayer(int PlayerPoint) {
+        switch (PlayerPoint){
+            case 1:
+                return "Fifteen";
+            case 2:
+                return "Thirty";
+            case 3:
+                return "Forty";
+            default:
+                return "Love";
+        }
+    }
+
+    private String calculateScore() {
+        switch (P1point){
+            case 0:
+                return "Love-All";
+            case 1:
+                return "Fifteen-All";
+            case 2:
+                return "Thirty-All";
+            default:
+                return "Deuce";
+        }
+    }
+
+    //Métodos add
+    private String addScore() {
+        return P1res + "-" + P2res;
+    }
+
+    private void addLovePlayer(String playerResult) {
+        if (playerResult.equals(P1res)){
+            P2res = "Love";
+            return;
+        }
+        P1res = "Love";
+    }
+
+    //Metodos para puntaje
+
     public void P1Score(){
         P1point++;
     }
-    
+
     public void P2Score(){
         P2point++;
     }
 
     public void wonPoint(String player) {
-        if (player == "player1")
+        if (player.equals(player1Name)){
             P1Score();
-        else
-            P2Score();
+            return;
+        }
+        P2Score();
     }
 }
