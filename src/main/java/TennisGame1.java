@@ -21,11 +21,10 @@ public class TennisGame1 implements TennisGame {
 
     public String getScore() {
         String score = "";
-        int tempScore = 0;
         if (isEqualScore()) {
             return addScore();
         } else if (isMaxScore()) {
-            return getWinner();
+            return getScoreWinner();
         }
         return calculateScore(score);
     }
@@ -34,7 +33,7 @@ public class TennisGame1 implements TennisGame {
         return m_score1==m_score2;
     }
 
-    private String getWinner() {
+    private String getScoreWinner() {
         String score = "";
         int minusResult = m_score1-m_score2;
         score = getResult(minusResult);
