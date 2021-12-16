@@ -11,8 +11,36 @@ public class TennisGame1 implements TennisGame {
         this.player2Name = player2Name;
     }
 
+    private boolean isEqualScore() {
+        return m_score1==m_score2;
+    }
+
+    private String getWinner(int minusResult) {
+        return minusResult >= 2 ? "Win for "+ player1Name : "Win for "+ player2Name;
+    }
+
+    private String getAdvantage(int minusResult) {
+        return minusResult == 1 ? "Advantage "+ player1Name : "Advantage "+ player2Name;
+    }
+
+    private boolean isMaxScore() {
+        return m_score1>=4 || m_score2>=4;
+    }
+
+    private boolean isAdvantage(int minusResult) {
+        return minusResult == 1 || minusResult == -1;
+    }
+
+
+    private String getResult(int minusResult) {
+        if (isAdvantage(minusResult)){
+            return getAdvantage(minusResult);
+        }
+        return getWinner(minusResult);
+    }
+
     public void wonPoint(String playerName) {
-        if (playerName.equals("player1")){
+        if (playerName.equals(player1Name)){
             m_score1 += 1;
             return;
         }
@@ -26,11 +54,7 @@ public class TennisGame1 implements TennisGame {
         } else if (isMaxScore()) {
             return getScoreWinner();
         }
-        return calculateScore(score);
-    }
-
-    private boolean isEqualScore() {
-        return m_score1==m_score2;
+        return calculateScore();
     }
 
     private String getScoreWinner() {
@@ -38,29 +62,6 @@ public class TennisGame1 implements TennisGame {
         int minusResult = m_score1-m_score2;
         score = getResult(minusResult);
         return score;
-    }
-
-    private String getResult(int minusResult) {
-        if (isAdvantage(minusResult)){
-            return getAdvantage(minusResult);
-        }
-        return getWinner(minusResult);
-    }
-
-    private String getWinner(int minusResult) {
-        return minusResult >= 2 ? "Win for player1" : "Win for player2";
-    }
-
-    private String getAdvantage(int minusResult) {
-        return minusResult == 1 ? "Advantage player1" : "Advantage player2";
-    }
-
-    private boolean isAdvantage(int minusResult) {
-        return minusResult == 1 || minusResult == -1;
-    }
-
-    private boolean isMaxScore() {
-        return m_score1>=4 || m_score2>=4;
     }
 
     private String addScore() {
@@ -76,8 +77,9 @@ public class TennisGame1 implements TennisGame {
         }
     }
 
-    private String calculateScore(String score) {
+    private String calculateScore() {
         int tempScore;
+        String score = "";
         for (int i = 1; i<3; i++) {
             if (i == 1) {
                 tempScore = m_score1;
