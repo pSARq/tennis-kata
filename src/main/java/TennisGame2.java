@@ -1,11 +1,11 @@
 
 public class TennisGame2 implements TennisGame
 {
-    public int P1point = 0;
-    public int P2point = 0;
+    public int player1Point = 0;
+    public int player2Point = 0;
     
-    public String P1res = "";
-    public String P2res = "";
+    public String player1Result = "";
+    public String player2Result = "";
     private String player1Name;
     private String player2Name;
 
@@ -42,19 +42,19 @@ public class TennisGame2 implements TennisGame
     }
 
     private boolean isFirstPointGame() {
-        return isPlayer1FirstMarkPoint(P1point, P2point) || isPlayer1FirstMarkPoint(P2point, P1point);
+        return isPlayer1FirstMarkPoint(player1Point, player2Point) || isPlayer1FirstMarkPoint(player2Point, player1Point);
     }
 
     private boolean isPointHigher() {
-        return isPoint1HighThanPoint2(P2point, P1point) || isPoint1HighThanPoint2(P1point, P2point);
+        return isPoint1HighThanPoint2(player2Point, player1Point) || isPoint1HighThanPoint2(player1Point, player2Point);
     }
 
     private boolean isAdvantage() {
-        return isPoint1AdvantagePoint2(P1point, P2point) || isPoint1AdvantagePoint2(P2point, P1point);
+        return isPoint1AdvantagePoint2(player1Point, player2Point) || isPoint1AdvantagePoint2(player2Point, player1Point);
     }
 
     private boolean isWinner() {
-        return isFirstPointWinner(P1point, P2point) || isFirstPointWinner(P2point, P1point);
+        return isFirstPointWinner(player1Point, player2Point) || isFirstPointWinner(player2Point, player1Point);
     }
 
     //Son los métodos para validar condiciones de los puntajes
@@ -63,11 +63,11 @@ public class TennisGame2 implements TennisGame
     }
 
     private boolean isDeduce() {
-        return P1point==P2point && P1point>=3;
+        return player1Point==player2Point && player1Point>=3;
     }
 
     private boolean isPointEqual() {
-        return P1point == P2point && P1point < 4;
+        return player1Point == player2Point && player1Point < 4;
     }
 
     private boolean isFirstPointWinner(int firstPoint, int secondPoint) {
@@ -93,30 +93,30 @@ public class TennisGame2 implements TennisGame
     //Son los métodos para obtener resultados
     //Metodos get
     private String getFirstPointGame() {
-        if (isPlayer1FirstMarkPoint(P1point, P2point)){
-            P1res = calculatePointPlayer(P1point);
-            addLovePlayer(P1res);
+        if (isPlayer1FirstMarkPoint(player1Point, player2Point)){
+            player1Result = calculatePointPlayer(player1Point);
+            addLovePlayer(player1Result);
             return addScore();
         }
-        P2res = calculatePointPlayer(P2point);
-        addLovePlayer(P2res);
+        player2Result = calculatePointPlayer(player2Point);
+        addLovePlayer(player2Result);
         return addScore();
     }
 
     private String getAdvantagePlayer(){
-        return isPoint1AdvantagePoint2(P1point, P2point) == true ? "Advantage "+ player1Name : "Advantage "+ player2Name;
+        return isPoint1AdvantagePoint2(player1Point, player2Point) == true ? "Advantage "+ player1Name : "Advantage "+ player2Name;
     }
 
     private String getWinner(){
-        return isFirstPointWinner(P1point, P2point) == true ? "Win for "+ player1Name : "Win for "+ player2Name;
+        return isFirstPointWinner(player1Point, player2Point) == true ? "Win for "+ player1Name : "Win for "+ player2Name;
     }
 
     private String getPointPlayers(){
         if (isFirstPointGame()){
             return getFirstPointGame();
         }
-        P1res=calculatePointPlayer(P1point);
-        P2res=calculatePointPlayer(P2point);
+        player1Result=calculatePointPlayer(player1Point);
+        player2Result=calculatePointPlayer(player2Point);
         return addScore();
     }
 
@@ -136,7 +136,7 @@ public class TennisGame2 implements TennisGame
     }
 
     private String calculateScore() {
-        switch (P1point){
+        switch (player1Point){
             case 0:
                 return "Love-All";
             case 1:
@@ -150,25 +150,25 @@ public class TennisGame2 implements TennisGame
 
     //Métodos add
     private String addScore() {
-        return P1res + "-" + P2res;
+        return player1Result + "-" + player2Result;
     }
 
     private void addLovePlayer(String playerResult) {
-        if (playerResult.equals(P1res)){
-            P2res = "Love";
+        if (playerResult.equals(player1Result)){
+            player2Result = "Love";
             return;
         }
-        P1res = "Love";
+        player1Result = "Love";
     }
 
     //Metodos para puntaje
 
     public void P1Score(){
-        P1point++;
+        player1Point++;
     }
 
     public void P2Score(){
-        P2point++;
+        player2Point++;
     }
 
     public void wonPoint(String player) {
