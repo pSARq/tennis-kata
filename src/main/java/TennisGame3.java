@@ -18,19 +18,19 @@ public class TennisGame3 implements TennisGame {
         if (isPointPlayerEqual()){
             return "Deuce";
         }
-        return getPlayerWinner();
+        return getLeadingPlayer();
     }
 
-    private String getPlayerWinner() {
+    private String getLeadingPlayer() {
         String nameWinner = pointPlayer1 > pointPlayer2 ? player1Name : player2Name;
-        return getResultWinner(nameWinner);
+        return getResultLeadingPLayer(nameWinner);
     }
 
-    private String getResultWinner(String nameWinner) {
-        return isPointPlayerEqual0() ? "Advantage " + nameWinner : "Win for " + nameWinner;
+    private String getResultLeadingPLayer(String nameWinner) {
+        return isPointsPlayerEqual1() ? "Advantage " + nameWinner : "Win for " + nameWinner;
     }
 
-    private boolean isPointPlayerEqual0() {
+    private boolean isPointsPlayerEqual1() {
         return (pointPlayer1-pointPlayer2)*(pointPlayer1-pointPlayer2) == 1;
     }
 
@@ -39,9 +39,9 @@ public class TennisGame3 implements TennisGame {
     }
 
     private String getResultScore() {
-        String[] score = new String[]{"Love", "Fifteen", "Thirty", "Forty"};
-        String scoreWinner = score[pointPlayer1];
-        return (isPointPlayerEqual()) ? scoreWinner + "-All" : scoreWinner + "-" + score[pointPlayer2];
+        String[] listScore = new String[]{"Love", "Fifteen", "Thirty", "Forty"};
+        String score = listScore[pointPlayer1];
+        return (isPointPlayerEqual()) ? score + "-All" : score + "-" + listScore[pointPlayer2];
     }
 
     private boolean isGame() {
@@ -53,11 +53,11 @@ public class TennisGame3 implements TennisGame {
     }
 
     public void wonPoint(String playerName) {
-        if (playerName.equals(player1Name))
+        if (playerName.equals(player1Name)){
             this.pointPlayer1 += 1;
-        else
-            this.pointPlayer2 += 1;
-        
+            return;
+        }
+        this.pointPlayer2 += 1;
     }
 
 }

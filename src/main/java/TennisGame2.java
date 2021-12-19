@@ -3,9 +3,7 @@ public class TennisGame2 implements TennisGame
 {
     public int player1Point = 0;
     public int player2Point = 0;
-    
-    public String player1Result = "";
-    public String player2Result = "";
+
     private String player1Name;
     private String player2Name;
 
@@ -15,167 +13,84 @@ public class TennisGame2 implements TennisGame
     }
 
     public String getScore(){
-        String score = "";
-
-        if (isTie()) {
-            score = calculateScore();
+        if (isGame()) {
+            return getResultScore();
         }
 
-        if (isPointHigher()) {
-            score = getPointPlayers();
+        if (isDeduce()) {
+            return "Deuce";
         }
 
-        if (isAdvantage()) {
-            score = getAdvantagePlayer();
-        }
+        return getResultPlayer();
 
-        if (isWinner()){
-            score = getWinner();
-        }
-
-        return score;
     }
 
     //Métodos para validar los metodos de los if dentro de getScore()
-    private boolean isTie() {
-        return isPointEqual() || isDeduce();
-    }
-
-    private boolean isFirstPointGame() {
-        return isPlayer1FirstMarkPoint(player1Point, player2Point) || isPlayer1FirstMarkPoint(player2Point, player1Point);
-    }
-
-    private boolean isPointHigher() {
-        return isPoint1HighThanPoint2(player2Point, player1Point) || isPoint1HighThanPoint2(player1Point, player2Point);
-    }
-
-    private boolean isAdvantage() {
-        return isPoint1AdvantagePoint2(player1Point, player2Point) || isPoint1AdvantagePoint2(player2Point, player1Point);
-    }
-
-    private boolean isWinner() {
-        return isFirstPointWinner(player1Point, player2Point) || isFirstPointWinner(player2Point, player1Point);
-    }
-
-    //Son los métodos para validar condiciones de los puntajes
-    private boolean isPlayer1FirstMarkPoint(int firstPoint, int secondPoint) {
-        return firstPoint > 0 && secondPoint==0;
+    private boolean isGame(){
+       return isPointLessThan3() || isPointEqualAndNotDeuce();
     }
 
     private boolean isDeduce() {
-        return player1Point==player2Point && player1Point>=3;
+        return isPointPlayerEqual() && player1Point >= 3;
     }
 
-    private boolean isPointEqual() {
-        return player1Point == player2Point && player1Point < 4;
+    //Son los métodos para validar condiciones de los puntajes
+
+    private boolean isPointLessThan3() {
+        return isPoint2HighThanPoint1(player2Point, player1Point) || isPoint2HighThanPoint1(player1Point, player2Point);
     }
 
-    private boolean isFirstPointWinner(int firstPoint, int secondPoint) {
-        return isPoint1winner(firstPoint, secondPoint) && isSubtractionPointsHigher1(firstPoint, secondPoint);
+    private boolean isAdvantage(int result) {
+        return result == 1 || result == -1;
     }
 
-    private boolean isSubtractionPointsHigher1(int firstPoint, int secondPoint) {
-        return (firstPoint - secondPoint) >= 2;
+    private boolean isPointPlayerEqual() {
+        return player1Point == player2Point;
     }
 
-    private boolean isPoint1winner(int firstPoint, int secondPoint) {
-        return firstPoint >= 4 && secondPoint >= 0;
+    private boolean isPointEqualAndNotDeuce() {
+        return isPointPlayerEqual() && !isDeduce();
     }
 
-    private boolean isPoint1HighThanPoint2(int firstPoint, int secondPoint) {
-        return secondPoint > firstPoint && secondPoint < 4;
+    private boolean isPoint2HighThanPoint1(int firstPoint, int secondPoint) {
+        return secondPoint > firstPoint && secondPoint <= 3;
     }
 
-    private boolean isPoint1AdvantagePoint2(int firstPoint, int secondPoint) {
-        return firstPoint > secondPoint && secondPoint >= 3;
-    }
 
     //Son los métodos para obtener resultados
     //Metodos get
-    private String getFirstPointGame() {
-        if (isPlayer1FirstMarkPoint(player1Point, player2Point)){
-            player1Result = calculatePointPlayer(player1Point);
-            addLovePlayer(player1Result);
-            return addScore();
-        }
-        player2Result = calculatePointPlayer(player2Point);
-        addLovePlayer(player2Result);
-        return addScore();
-    }
-
     private String getAdvantagePlayer(){
-        return isPoint1AdvantagePoint2(player1Point, player2Point) == true ? "Advantage "+ player1Name : "Advantage "+ player2Name;
+        String namePlayer = player1Point > player2Point ? player1Name : player2Name;
+        return "Advantage "+ namePlayer;
     }
 
-    private String getWinner(){
-        return isFirstPointWinner(player1Point, player2Point) == true ? "Win for "+ player1Name : "Win for "+ player2Name;
+    private String getWinner(int result){
+        String winner = result >= 2 ? player1Name : player2Name;
+        return "Win for "+ winner;
     }
 
-    private String getPointPlayers(){
-        if (isFirstPointGame()){
-            return getFirstPointGame();
+    private String getResultPlayer() {
+        int result = player1Point - player2Point;
+        if (isAdvantage(result)){
+            return getAdvantagePlayer();
         }
-        player1Result=calculatePointPlayer(player1Point);
-        player2Result=calculatePointPlayer(player2Point);
-        return addScore();
+        return getWinner(result);
     }
 
 
     //Metodos calculate
-    private String calculatePointPlayer(int PlayerPoint) {
-        switch (PlayerPoint){
-            case 1:
-                return "Fifteen";
-            case 2:
-                return "Thirty";
-            case 3:
-                return "Forty";
-            default:
-                return "Love";
-        }
+    private String getResultScore() {
+        String[] listScore = new String[]{"Love", "Fifteen", "Thirty", "Forty"};
+        String score = listScore[player1Point];
+        return (isPointPlayerEqual()) ? score + "-All" : score + "-" + listScore[player2Point];
     }
 
-    private String calculateScore() {
-        switch (player1Point){
-            case 0:
-                return "Love-All";
-            case 1:
-                return "Fifteen-All";
-            case 2:
-                return "Thirty-All";
-            default:
-                return "Deuce";
-        }
-    }
-
-    //Métodos add
-    private String addScore() {
-        return player1Result + "-" + player2Result;
-    }
-
-    private void addLovePlayer(String playerResult) {
-        if (playerResult.equals(player1Result)){
-            player2Result = "Love";
-            return;
-        }
-        player1Result = "Love";
-    }
-
-    //Metodos para puntaje
-
-    public void P1Score(){
-        player1Point++;
-    }
-
-    public void P2Score(){
-        player2Point++;
-    }
-
+    //Metodo para puntaje
     public void wonPoint(String player) {
         if (player.equals(player1Name)){
-            P1Score();
+            player1Point++;
             return;
         }
-        P2Score();
+        player2Point++;
     }
 }
